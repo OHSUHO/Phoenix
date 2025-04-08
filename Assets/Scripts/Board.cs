@@ -22,7 +22,7 @@ public class Board : MonoBehaviour
 
     void Start()
     {   int []arr = { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10 };
-        //arr = arr.OrderBy(x => Random.Range(0f,10f)).ToArray();
+        arr = arr.OrderBy(x => Random.Range(0f,10f)).ToArray();
         raw = 4;
         
         cardNum = 20;
