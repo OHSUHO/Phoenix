@@ -34,9 +34,11 @@ public class Card : MonoBehaviour
 
     void MissMatched()
     {
+        Debug.Log("missMatch");
         anim.SetBool("isSelected", false);
         InvokeSetUnActiveFront();
         InvokeSetActiveBack();
+        TimerBar.Instance.elapsedTime += 1.5f;
     }
 
     

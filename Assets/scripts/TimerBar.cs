@@ -12,7 +12,7 @@ public class TimerBar : MonoBehaviour
     [SerializeField] private RectTransform phoenix;
     [SerializeField] private float totalTime = 30f;
 
-    
+
 
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color warningColor = Color.yellow;
@@ -20,20 +20,23 @@ public class TimerBar : MonoBehaviour
 
     public float elapsedTime = 0f;
     private float barWidth;
-    private bool isRunning = false; // Å¸ÀÌ¸Ó ÀÛµ¿ È®ÀÎ¿ëÀ¸·Î °ÔÀÓ ¿À¹ö ÈÄ¿¡µµ Update°¡ °è¼Ó È£ÃâµÇ´Â °ÍÀ» ¹æÁö
+    private bool isRunning = false; // íƒ€ì´ë¨¸ ì‘ë™ í™•ì¸ìš©ìœ¼ë¡œ ê²Œì„ ì˜¤ë²„ í›„ì—ë„ Updateê°€ ê³„ì† í˜¸ì¶œë˜ëŠ” ê²ƒì„ ë°©ì§€
 
-    [SerializeField] private RectTransform shakeTarget; // TimerBar ÀüÃ¼ÀÇ RectTransform
+    [SerializeField] private RectTransform shakeTarget; // TimerBar ì „ì²´ì˜ RectTransform
 
     private float shakeTimer = 0f;
     private Vector3 originalPosition;
 
-    void Start()
+    private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
-        barWidth = ((RectTransform)timerFillImage.transform).rect.width; // °ÔÀÌÁö ÀüÃ¼ ³Êºñ °è»ê
+    }
+    void Start()
+    {
+        barWidth = ((RectTransform)timerFillImage.transform).rect.width; // ê²Œì´ì§€ ì „ì²´ ë„ˆë¹„ ê³„ì‚°
         isRunning = true;
         originalPosition = shakeTarget.anchoredPosition;
     }
@@ -43,21 +46,20 @@ public class TimerBar : MonoBehaviour
         if (!isRunning) return;
 
         elapsedTime += Time.deltaTime;
-        
-        float t = Mathf.Clamp01(elapsedTime / totalTime); // ÀüÃ¼ ½Ã°£ Áß ¾ó¸¶³ª Áö³µ´ÂÁö 0~1 »çÀÌÀÇ ºñÀ²·Î °è»ê
+        float t = Mathf.Clamp01(elapsedTime / totalTime); // ì „ì²´ ì‹œê°„ ì¤‘ ì–¼ë§ˆë‚˜ ì§€ë‚¬ëŠ”ì§€ 0~1 ì‚¬ì´ì˜ ë¹„ìœ¨ë¡œ ê³„ì‚°
 
-        // °ÔÀÌÁö Ã¤¿ì±â
-        timerFillImage.fillAmount = t; // Image ÄÄÆ÷³ÍÆ®ÀÇ fillAmount¸¦ Á¶Á¤
+        // ê²Œì´ì§€ ì±„ìš°ê¸°
+        timerFillImage.fillAmount = t; // Image ì»´í¬ë„ŒíŠ¸ì˜ fillAmountë¥¼ ì¡°ì •
 
-        // »ö º¯°æ
+        // ìƒ‰ ë³€ê²½
         UpdateBarColor();
 
-        // ºÒ»çÁ¶
-        Vector2 pos = phoenix.anchoredPosition; //ÇöÀç ºÒ»çÁ¶ÀÇ ¾ŞÄ¿ ±âÁØ À§Ä¡¸¦ pos¿¡ ÀúÀå
-        pos.x = barWidth * t; // °ÔÀÌÁö¹Ù ÀüÃ¼ ³Êºñ¿¡ t(½Ã°£ ÁøÇà ºñÀ²)À» °öÇØÁİ´Ï´Ù. t´Â 0.0~1.0ÀÇ °ªÀ» °¡Áı´Ï´Ù.
-        phoenix.anchoredPosition = pos; // ¼öÁ¤ÇÑ ÁÂÇ¥ Àû¿ë
+        // ë¶ˆì‚¬ì¡°
+        Vector2 pos = phoenix.anchoredPosition; //í˜„ì¬ ë¶ˆì‚¬ì¡°ì˜ ì•µì»¤ ê¸°ì¤€ ìœ„ì¹˜ë¥¼ posì— ì €ì¥
+        pos.x = barWidth * t; // ê²Œì´ì§€ë°” ì „ì²´ ë„ˆë¹„ì— t(ì‹œê°„ ì§„í–‰ ë¹„ìœ¨)ì„ ê³±í•´ì¤ë‹ˆë‹¤. tëŠ” 0.0~1.0ì˜ ê°’ì„ ê°€ì§‘ë‹ˆë‹¤.
+        phoenix.anchoredPosition = pos; // ìˆ˜ì •í•œ ì¢Œí‘œ ì ìš©
 
-        // Èçµé¸² ½ÃÀÛ
+        // í”ë“¤ë¦¼ ì‹œì‘
         if (elapsedTime >= 25f)
         {
             shakeTimer += Time.deltaTime;
@@ -68,11 +70,11 @@ public class TimerBar : MonoBehaviour
             }
         }
 
-        // Å¸ÀÓ ¿À¹ö
+        // íƒ€ì„ ì˜¤ë²„
         CheckGameOver();
     }
 
-    // Å¸ÀÌ¸Ó°¡ Èçµé¸®´Â ¿¬Ãâ
+    // íƒ€ì´ë¨¸ê°€ í”ë“¤ë¦¬ëŠ” ì—°ì¶œ
     private IEnumerator ShakeUI()
     {
         float duration = 0.2f;
@@ -114,7 +116,6 @@ public class TimerBar : MonoBehaviour
         if (elapsedTime >= totalTime)
         {
             isRunning = false;
-            //°ÔÀÓ ¸Å´ÏÀú¿¡¼­ °ÔÀÓ¿À¹ö ÇÔ¼ö Á¦ÀÛ
             //GameManager.Instance.GameOver();
         }
     }
