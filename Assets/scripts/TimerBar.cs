@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TimerBar : MonoBehaviour
 {
+    public static TimerBar Instance;
+
     [SerializeField] private Image timerFillImage;
     [SerializeField] private RectTransform phoenix;
     [SerializeField] private float totalTime = 30f;
@@ -16,7 +18,7 @@ public class TimerBar : MonoBehaviour
     [SerializeField] private Color warningColor = Color.yellow;
     [SerializeField] private Color dangerColor = Color.red;
 
-    private float elapsedTime = 0f;
+    public float elapsedTime = 0f;
     private float barWidth;
     private bool isRunning = false; // 타이머 작동 확인용으로 게임 오버 후에도 Update가 계속 호출되는 것을 방지
 
@@ -27,6 +29,10 @@ public class TimerBar : MonoBehaviour
 
     void Start()
     {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
         barWidth = ((RectTransform)timerFillImage.transform).rect.width; // 게이지 전체 너비 계산
         isRunning = true;
         originalPosition = shakeTarget.anchoredPosition;
@@ -37,6 +43,7 @@ public class TimerBar : MonoBehaviour
         if (!isRunning) return;
 
         elapsedTime += Time.deltaTime;
+        
         float t = Mathf.Clamp01(elapsedTime / totalTime); // 전체 시간 중 얼마나 지났는지 0~1 사이의 비율로 계산
 
         // 게이지 채우기
