@@ -167,7 +167,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &4639402351703596968
 MonoBehaviour:
@@ -325,7 +325,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6145125847800627922}
   - component: {fileID: 1507321946957815754}
-  - component: {fileID: 6109319102122397682}
+  - component: {fileID: 2827228011171151769}
   m_Layer: 0
   m_Name: Card
   m_TagString: Untagged
@@ -371,7 +371,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6109319102122397682
+--- !u!114 &2827228011171151769
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -380,7 +380,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6469120841577441147}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2edeb768e1456ac4e9daaee39b62fc75, type: 3}
+  m_Script: {fileID: 11500000, guid: 19c11e5925ff8e54abde356e475c8b7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 1507321946957815754}
@@ -511,7 +511,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6109319102122397682}
+      - m_Target: {fileID: 2827228011171151769}
         m_TargetAssemblyTypeName: Card, Assembly-CSharp
         m_MethodName: SelectedCard
         m_Mode: 1
