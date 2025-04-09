@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TimerBar : MonoBehaviour
 {
+    public static TimerBar Instance;
+
     [Header("UI Referencees")]
     [SerializeField] private Image timerFillImage;
     [SerializeField] private RectTransform phoenix;
@@ -27,7 +29,7 @@ public class TimerBar : MonoBehaviour
     [SerializeField] private float bgmSpeedUpTime = 10f; // BGM 속도 빨라지는 시점
     [SerializeField] private float shakeStartTime = 25f;
 
-    private float elapsedTime = 0f;
+    public float elapsedTime = 0f;
     private float barWidth;
     private Vector3 originalPosition;
     private int lastWarningSecond = -1;
@@ -40,6 +42,15 @@ public class TimerBar : MonoBehaviour
     private bool playedEndSound = false;
     private float shakeTimer = 0f;
 
+    public void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        Time.timeScale = 1;
+
+    }
     private void Start()
     {
         barWidth = ((RectTransform)timerFillImage.transform).rect.width; // 게이지 전체 너비 계산
