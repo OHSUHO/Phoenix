@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    int idx = 0;
+    public int idx = 0;
 
     public Animator anim;
     public GameObject front;
     public GameObject back;
     public SpriteRenderer frontImage;
-    
+
+
+
     private void Start()
     {
-     
+
 
     }
     public void SelectedCard()
@@ -21,9 +23,9 @@ public class Card : MonoBehaviour
         anim.SetBool("isSelected", true);
         InvokeSetActiveFront();
         InvokeSetUnActiveBack();
-        Invoke("MissMatched", 1.0f);
-        
-        
+
+
+
     }
 
     public void Setting(int num)
@@ -32,16 +34,21 @@ public class Card : MonoBehaviour
         frontImage.sprite = Resources.Load<Sprite>($"Phoenix{num}");
     }
 
-    void MissMatched()
+
+    public void InvokeMissMatched()
     {
-        Debug.Log("missMatch");
+        Invoke("MissMatched", 1f);
+    }
+    public void MissMatched()
+    {
+
         anim.SetBool("isSelected", false);
         InvokeSetUnActiveFront();
         InvokeSetActiveBack();
-        TimerBar.Instance.elapsedTime += 1.5f;
+
     }
 
-    
+
     void InvokeSetActiveFront()
     {
         Invoke("SetActiveFront", 0.5f);
@@ -79,4 +86,31 @@ public class Card : MonoBehaviour
     {
         back.SetActive(true);
     }
+
+    public void OpenCard()
+    {
+        SelectedCard();
+
+        if (GameManager.Instance.firstCard == null)
+        {
+            GameManager.Instance.firstCard = this;
+        }
+        else
+        {
+            GameManager.Instance.secondCard = this;
+            GameManager.Instance.Matched();
+        }
+    }
+
+    public void DestroyCard()
+    {
+        Invoke("DestoryCardInvoke", 1.0f);
+    }
+
+    void DestoryCardInvoke()
+    {
+        Destroy(gameObject);
+    }
+
+
 }

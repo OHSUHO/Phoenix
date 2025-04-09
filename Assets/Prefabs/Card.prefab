@@ -383,6 +383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19c11e5925ff8e54abde356e475c8b7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idx: 0
   anim: {fileID: 1507321946957815754}
   front: {fileID: 4789994381159236813}
   back: {fileID: 1534716882692229619}
@@ -513,7 +514,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2827228011171151769}
         m_TargetAssemblyTypeName: Card, Assembly-CSharp
-        m_MethodName: SelectedCard
+        m_MethodName: OpenCard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

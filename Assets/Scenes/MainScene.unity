@@ -735,6 +735,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Fail: {fileID: 1211966618}
   Victory: {fileID: 1302651275}
+  firstCard: {fileID: 0}
+  secondCard: {fileID: 0}
 --- !u!1 &392361001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2815,7 +2817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8efd179c8596a1f48a6faa113f55cdd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgm: {fileID: 8300000, guid: e4bc0f1d0bae43941a5f6a04f4e13174, type: 3}
+  bgm: {fileID: 8300000, guid: 35967e8a4dfb1664e9b066939272c0a4, type: 3}
 --- !u!82 &1326379659
 AudioSource:
   m_ObjectHideFlags: 0
