@@ -10,11 +10,14 @@ public class Card : MonoBehaviour
     public GameObject front;
     public GameObject back;
     public SpriteRenderer frontImage;
-
+    [SerializeField] private AudioClip flip; //카드 뒤집기 사운드
+    
+    AudioSource ads;
 
 
     private void Start()
     {
+        ads = GetComponent<AudioSource>();  
 
 
     }
@@ -23,7 +26,7 @@ public class Card : MonoBehaviour
         anim.SetBool("isSelected", true);
         InvokeSetActiveFront();
         InvokeSetUnActiveBack();
-
+        ads.PlayOneShot(flip);
 
 
     }

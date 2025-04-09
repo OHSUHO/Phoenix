@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
 
     public Card firstCard;
     public Card secondCard;
-
+    [SerializeField] private AudioClip match; //카드 매치 사운드
+    AudioSource ads;
     float time = 0f;
     
     public void Awake()
@@ -25,7 +26,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        ads = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -58,6 +59,7 @@ public class GameManager : MonoBehaviour
         {
             firstCard.DestroyCard();
             secondCard.DestroyCard();
+            ads.PlayOneShot(match);
         }
         else
         {
