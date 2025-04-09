@@ -6,63 +6,117 @@ using UnityEngine.UI;
 
 public class TimerBar : MonoBehaviour
 {
+    [Header("UI Referencees")]
     [SerializeField] private Image timerFillImage;
     [SerializeField] private RectTransform phoenix;
+    [SerializeField] private RectTransform shakeTarget; // TimerBar 전체의 RectTransform
+
+    [Header("Timer Settings")]
     [SerializeField] private float totalTime = 30f;
 
-    
-
+    [Header("Color Thresholds")]
+    [SerializeField] private float warningTimeThreshold = 15f;
+    [SerializeField] private float dangerTimeThreshold = 5f;
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color warningColor = Color.yellow;
     [SerializeField] private Color dangerColor = Color.red;
 
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip warningSound; // 경고음
+    [SerializeField] private AudioClip gameOverSound; // 게임오버음
+    [SerializeField] private float bgmSpeedUpTime = 10f; // BGM 속도 빨라지는 시점
+    [SerializeField] private float shakeStartTime = 25f;
+
     private float elapsedTime = 0f;
     private float barWidth;
-    private bool isRunning = false; // 타이머 작동 확인용으로 게임 오버 후에도 Update가 계속 호출되는 것을 방지
-
-    [SerializeField] private RectTransform shakeTarget; // TimerBar 전체의 RectTransform
-
-    private float shakeTimer = 0f;
     private Vector3 originalPosition;
+    private int lastWarningSecond = -1;
 
-    void Start()
+    private AudioSource bgmSource;
+    private AudioSource sfxSource;
+
+    private bool isRunning = false; // 타이머 작동 확인용으로 게임 오버 후에도 Update가 계속 호출되는 것을 방지
+    private bool hasSpeedUp = false;
+    private bool playedEndSound = false;
+    private float shakeTimer = 0f;
+
+    private void Start()
     {
         barWidth = ((RectTransform)timerFillImage.transform).rect.width; // 게이지 전체 너비 계산
         isRunning = true;
         originalPosition = shakeTarget.anchoredPosition;
+
+        bgmSource = AudioManager.Instance.GetAudioSource();
+        sfxSource = gameObject.AddComponent<AudioSource>();
+
+        StartTimer();
     }
 
-    void Update()
+    private void Update()
     {
         if (!isRunning) return;
 
         elapsedTime += Time.deltaTime;
-        float t = Mathf.Clamp01(elapsedTime / totalTime); // 전체 시간 중 얼마나 지났는지 0~1 사이의 비율로 계산
+        float t = Mathf.Clamp01(elapsedTime / totalTime);
 
-        // 게이지 채우기
-        timerFillImage.fillAmount = t; // Image 컴포넌트의 fillAmount를 조정
+        UpdateTimerUI(t);
+        UpdateBGM(t);
+        UpdateWarningSound();
+        UpdateShake();
 
-        // 색 변경
-        UpdateBarColor();
-
-        // 불사조
-        Vector2 pos = phoenix.anchoredPosition; //현재 불사조의 앵커 기준 위치를 pos에 저장
-        pos.x = barWidth * t; // 게이지바 전체 너비에 t(시간 진행 비율)을 곱해줍니다. t는 0.0~1.0의 값을 가집니다.
-        phoenix.anchoredPosition = pos; // 수정한 좌표 적용
-
-        // 흔들림 시작
-        if (elapsedTime >= 25f)
-        {
-            shakeTimer += Time.deltaTime;
-            if (shakeTimer >= 1f)
-            {
-                StartCoroutine(ShakeUI());
-                shakeTimer = 0f;
-            }
-        }
-
-        // 타임 오버
         CheckGameOver();
+    }
+
+    private void UpdateTimerUI(float t)
+    {
+        timerFillImage.fillAmount = t;
+
+        // 색상 변경
+        if (elapsedTime >= totalTime - dangerTimeThreshold)
+            timerFillImage.color = dangerColor;
+        else if (elapsedTime >= totalTime - warningTimeThreshold)
+            timerFillImage.color = warningColor;
+        else
+            timerFillImage.color = normalColor;
+
+        // 불사조 이동
+        Vector2 pos = phoenix.anchoredPosition;
+        pos.x = barWidth * t;
+        phoenix.anchoredPosition = pos;
+    }
+
+    private void UpdateBGM(float t)
+    {
+        if (!hasSpeedUp && (totalTime - elapsedTime) <= bgmSpeedUpTime)
+        {
+            if (bgmSource != null)
+                bgmSource.pitch = 1.3f;
+
+            hasSpeedUp = true;
+        }
+    }
+    private void UpdateWarningSound()
+    {
+        if (elapsedTime < totalTime - dangerTimeThreshold || elapsedTime >= totalTime) return;
+
+        int remaining = Mathf.FloorToInt(totalTime - elapsedTime);
+        if (remaining != lastWarningSecond)
+        {
+            lastWarningSecond = remaining;
+            if (warningSound)
+                sfxSource.PlayOneShot(warningSound);
+        }
+    }
+    private void UpdateShake()
+    {
+        if (elapsedTime < shakeStartTime) return;
+
+        shakeTimer += Time.deltaTime;
+        if (shakeTimer >= 1f)
+        {
+            StartCoroutine(ShakeUI());
+            shakeTimer = 0f;
+        }
     }
 
     // 타이머가 흔들리는 연출
@@ -85,31 +139,44 @@ public class TimerBar : MonoBehaviour
         shakeTarget.anchoredPosition = originalPosition;
     }
 
+
+    private void CheckGameOver()
+    {
+        if (elapsedTime < totalTime) return;
+
+        if (!playedEndSound)
+        {
+            playedEndSound = true;
+
+            if (bgmSource != null)
+                bgmSource.Stop();
+
+            if (gameOverSound)
+                sfxSource.PlayOneShot(gameOverSound);
+        }
+
+        isRunning = false;
+        //GameManager.Instance.GameOver();
+    }
+
     public void ResetTimer()
     {
         elapsedTime = 0f;
         isRunning = true;
-        timerFillImage.color = Color.white;
+        playedEndSound = false;
+        lastWarningSecond = -1;
+        hasSpeedUp = false;
+        shakeTimer = 0f;
+
+        timerFillImage.color = normalColor;
+
+        if (bgmSource != null)
+            bgmSource.pitch = 1f;
     }
 
-    private void UpdateBarColor()
+    public void StartTimer()
     {
-        if (elapsedTime >= totalTime - 5f)
-            timerFillImage.color = dangerColor;
-        else if (elapsedTime >= totalTime / 2f)
-            timerFillImage.color = warningColor;
-        else
-            timerFillImage.color = normalColor;
-    }
-
-    private void CheckGameOver()
-    {
-        if (elapsedTime >= totalTime)
-        {
-            isRunning = false;
-            //게임 매니저에서 게임오버 함수 제작
-            //GameManager.Instance.GameOver();
-        }
+        ResetTimer();
     }
 
 }
