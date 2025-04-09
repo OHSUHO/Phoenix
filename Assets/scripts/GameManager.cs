@@ -61,11 +61,22 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            firstCard.CloseCard();
-            secondCard.CloseCard();
+            CardMissMatch();
+           
         }
 
         firstCard = null;
         secondCard = null;
     }
+
+  
+
+    public void CardMissMatch()
+    {
+        firstCard.InvokeMissMatched();
+        secondCard.InvokeMissMatched();
+        TimerBar.Instance.elapsedTime += 1.5f;
+    }
+
+
 }

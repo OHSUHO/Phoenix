@@ -23,7 +23,7 @@ public class Card : MonoBehaviour
         anim.SetBool("isSelected", true);
         InvokeSetActiveFront();
         InvokeSetUnActiveBack();
-        Invoke("MissMatched", 1.0f);
+        
         
         
     }
@@ -34,13 +34,18 @@ public class Card : MonoBehaviour
         frontImage.sprite = Resources.Load<Sprite>($"Phoenix{num}");
     }
 
-    void MissMatched()
+
+    public void InvokeMissMatched()
+    {
+        Invoke("MissMatched", 1f);
+    }
+    public void MissMatched()
     {
         
         anim.SetBool("isSelected", false);
         InvokeSetUnActiveFront();
         InvokeSetActiveBack();
-        TimerBar.Instance.elapsedTime += 1.5f;
+        
     }
 
     
@@ -84,9 +89,7 @@ public class Card : MonoBehaviour
 
     public void OpenCard()
     {
-        anim.SetBool("isSelected", true);
-        front.SetActive(true);
-        back.SetActive(false);
+        SelectedCard();
 
         if (GameManager.Instance.firstCard == null)
         {
@@ -109,15 +112,5 @@ public class Card : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void CloseCard()
-    {
-        Invoke("CloseCardInvoke", 1.0f);
-    }
-
-    void CloseCardInvoke()
-    {
-        anim.SetBool("isSelected", false);
-        front.SetActive(false);
-        back.SetActive(true);
-    }
+ 
 }
