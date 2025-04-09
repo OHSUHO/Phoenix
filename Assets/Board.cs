@@ -35,7 +35,7 @@ public class Board : MonoBehaviour
             cardScript = go.GetComponent<Card>();
             cardScript.Setting(arr[i]);
         }
-        
+        GameManager.Instance.TotalCard = arr.Length;
     }
 
     

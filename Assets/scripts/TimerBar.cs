@@ -10,7 +10,7 @@ public class TimerBar : MonoBehaviour
 
     [SerializeField] private Image timerFillImage;
     [SerializeField] private RectTransform phoenix;
-    [SerializeField] private float totalTime = 30f;
+    [SerializeField] public float totalTime = 30f;
 
 
 
