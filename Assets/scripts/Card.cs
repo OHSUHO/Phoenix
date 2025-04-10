@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class Card : MonoBehaviour
     public GameObject front;
     public GameObject back;
     public SpriteRenderer frontImage;
+    
     [SerializeField] private AudioClip flip; //카드 뒤집기 사운드
     
     AudioSource ads;
@@ -48,8 +51,10 @@ public class Card : MonoBehaviour
         anim.SetBool("isSelected", false);
         InvokeSetUnActiveFront();
         InvokeSetActiveBack();
+        
 
     }
+
 
 
     void InvokeSetActiveFront()
@@ -57,7 +62,7 @@ public class Card : MonoBehaviour
         Invoke("SetActiveFront", 0.5f);
     }
 
-    void SetActiveFront()
+    public void SetActiveFront()
     {
         front.SetActive(true);
     }
@@ -93,16 +98,20 @@ public class Card : MonoBehaviour
     public void OpenCard()
     {
         SelectedCard();
-
-        if (GameManager.Instance.firstCard == null)
-        {
-            GameManager.Instance.firstCard = this;
+        
+            if (GameManager.Instance.firstCard == null)
+            {
+                GameManager.Instance.firstCard = this;
+                
         }
-        else
-        {
-            GameManager.Instance.secondCard = this;
-            GameManager.Instance.Matched();
-        }
+            else
+            {  
+            
+                GameManager.Instance.secondCard = this;
+              
+                GameManager.Instance.Matched();
+                
+            }
     }
 
     public void DestroyCard()

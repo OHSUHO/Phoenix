@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Security;
+using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -77,7 +80,10 @@ public class TimerBar : MonoBehaviour
 
         CheckGameOver();
     }
-
+    public void TimeSetting(float time)
+    {
+        totalTime = time;
+    }
     private void UpdateTimerUI(float t)
     {
         timerFillImage.fillAmount = t;
@@ -190,4 +196,15 @@ public class TimerBar : MonoBehaviour
         ResetTimer();
     }
 
+    public void TimeFreezing(float time)
+    {
+        isRunning = false;
+        Invoke("TimeUnFreeze", time);
+
+    }
+
+    void TimeUnFreeze()
+    {
+        isRunning = true;
+    }
 }

@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
 
     public Card firstCard;
     public Card secondCard;
+
+    public float totaltime;
     [SerializeField] private AudioClip match; //카드 매치 사운드
     AudioSource ads;
     float time = 0f;
@@ -27,6 +29,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         ads = GetComponent<AudioSource>();
+        totaltime = 50f;
+        TimerBar.Instance.TimeSetting(50f);
     }
 
     // Update is called once per frame
@@ -34,15 +38,15 @@ public class GameManager : MonoBehaviour
     {
         time = TimerBar.Instance.elapsedTime;
 
-        if (time >= 30)
+        if (time >= totaltime)
         {
-            time = 30f;
+            time = totaltime;
             GameOver();
         }
     }
     public void GameOver()
     {
-        if (time >= 30f)
+        if (time >= totaltime)
         {
             Fail.SetActive(true);
         }
@@ -55,8 +59,14 @@ public class GameManager : MonoBehaviour
 
     public void Matched()
     {
-        if (firstCard.idx == secondCard.idx)
+        if (firstCard.idx == secondCard.idx && (firstCard!=secondCard))
         {
+            if(firstCard.idx == 1)
+            {
+                FlipAll();
+                InvokeBackFlipAll();
+                TimerBar.Instance.TimeFreezing(3f);
+            }
             firstCard.DestroyCard();
             secondCard.DestroyCard();
             ads.PlayOneShot(match);
@@ -71,6 +81,38 @@ public class GameManager : MonoBehaviour
         secondCard = null;
     }
 
+    public void FlipAll()
+    {
+        GameObject[] go = GameObject.FindGameObjectsWithTag("Card");
+        Debug.Log(go.Length);
+        for (int i = 0; i < go.Length; i++) 
+        {
+           
+            Card cardScript = go[i].GetComponent<Card>();
+            cardScript.SelectedCard ();
+            
+        }
+        
+    }
+
+    void InvokeBackFlipAll()
+    {
+        Invoke("BackFlipAll",2f);
+    }
+
+    void BackFlipAll()
+    {
+        GameObject[] go = GameObject.FindGameObjectsWithTag("Card");
+        for (int i = 0; i < go.Length; i++)
+        {
+
+            Card cardScript = go[i].GetComponent<Card>();
+            cardScript.MissMatched();
+
+        }
+
+    }
+
   
 
     public void CardMissMatch()
@@ -79,6 +121,8 @@ public class GameManager : MonoBehaviour
         secondCard.InvokeMissMatched();
         TimerBar.Instance.elapsedTime += 1.5f;
     }
+
+
 
 
 }
