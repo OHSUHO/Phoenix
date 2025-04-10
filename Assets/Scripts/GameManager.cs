@@ -2,15 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public Text BestScore;
+    public Text NowScore;
+    public Text inGameTxt;
+
     public GameObject Fail;
     public GameObject Victory;
-    public Text inGameTxt;
+    public GameObject BestScorePanel;
+
+    public RectTransform BestScoreTitle;
+    public RectTransform NowScoreTitle;
+    public RectTransform BestScoreR;
+    public RectTransform NowScoreR;
 
     public Card firstCard;
     public Card secondCard;
@@ -26,7 +36,7 @@ public class GameManager : MonoBehaviour
     string card1Str = "르탄1 카드 모든카드공개!";
     string card2Str = "르탄2 카드 시간10초추가!";
     float time = 0f;
-    
+    int score = 0;
     public void Awake()
     {
         if (Instance == null)
@@ -58,9 +68,8 @@ public class GameManager : MonoBehaviour
        
         if (time >= totaltime)
         {
+            FailActive();
             time = totaltime;
-            Fail.SetActive(true);
-            Time.timeScale = 0f;
         }
         }
     }
@@ -109,10 +118,12 @@ public class GameManager : MonoBehaviour
                 totaltime += 10f;
                 StartCoroutine(EffectTxt(inGameTxt, 10, card2Str));
             }
-
+            
             firstCard.DestroyCard();
             secondCard.DestroyCard();
             cardNum -= 2;
+            score += 5;
+            NowScore.text = score.ToString();
             ads.PlayOneShot(match);
             if(cardNum == 0)
             {
@@ -160,7 +171,12 @@ public class GameManager : MonoBehaviour
 
     void Vict()
     {
-        Victory.SetActive(true ) ;
+        BestScoreTitle.anchoredPosition = new Vector2(220, 200);
+        NowScoreTitle.anchoredPosition = new Vector2(-220, 200);
+        BestScoreR.anchoredPosition = new Vector2(220, 110);
+        NowScoreR.anchoredPosition = new Vector2(-220, 110);
+        Score();
+        Victory.SetActive(true) ;
         Time.timeScale = 0f;
     }
 
@@ -196,7 +212,28 @@ public class GameManager : MonoBehaviour
 
     }
 
-  
+    public void Score()
+    {
+        if (PlayerPrefs.HasKey("BestScore"))
+        {
+            float best = PlayerPrefs.GetInt("BestScore");
+            if (best < score)
+            {
+                PlayerPrefs.SetInt("BestScore", score);
+                BestScore.text = score.ToString();
+            }
+            else
+            {
+                BestScore.text = best.ToString();
+            }
+        }
+        else
+        {
+            PlayerPrefs.SetInt("BestScore", score);
+            BestScore.text = score.ToString();
+        }
+        BestScorePanel.SetActive(true);
+    }
 
     public void CardMissMatch()
     {
@@ -206,7 +243,16 @@ public class GameManager : MonoBehaviour
         TimerBar.Instance.elapsedTime += 1.5f;
     }
 
-
+    public void FailActive()
+    {
+        Score();
+        BestScoreTitle.anchoredPosition = new Vector2(-120, 110);
+        NowScoreTitle.anchoredPosition = new Vector2(-120, -30);
+        BestScoreR.anchoredPosition = new Vector2(120, 110);
+        NowScoreR.anchoredPosition = new Vector2(120, -30);
+        Fail.SetActive(true);
+        Time.timeScale = 0f;
+    }
 
 
 }
