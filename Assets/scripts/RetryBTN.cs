@@ -27,4 +27,29 @@ public class RetryBTN : MonoBehaviour
     {
         CreaterBan.SetActive(true);
     }
+    public void StageScene()
+    {
+       
+        SceneManager.LoadScene("StageScene");
+
+    }
+    public void StageEasyScene()
+    {
+        DifficultSetting.Instance.Setting(DifficultSetting.Difficulty.Easy);
+        Debug.Log(DifficultSetting.Instance.Getting());
+        Retry();
+
+    }
+    public void StageNormalScene()
+    {
+        DifficultSetting.Instance.Setting(DifficultSetting.Difficulty.Normal);
+        Debug.Log(DifficultSetting.Instance.Getting());
+        Retry();
+    }
+    public void StageHardScene()
+    {
+        DifficultSetting.Instance.Setting(DifficultSetting.Difficulty.Hard);
+        Debug.Log(DifficultSetting.Instance.Getting());
+        Retry();
+    }
 }

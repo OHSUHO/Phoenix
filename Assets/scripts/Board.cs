@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,22 +22,30 @@ public class Board : MonoBehaviour
     }
 
     void Start()
-    {   int []arr = { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10 };
-        arr = arr.OrderBy(x => Random.Range(0f,10f)).ToArray();
-        raw = 4;
+    {
         
+    }
+
+    public void BoardSetting(Action callback)
+    {
+        int[] arr = { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10 };
+        arr = arr.OrderBy(x => UnityEngine.Random.Range(0f, 10f)).ToArray();
+        raw = 4;
+
         cardNum = 20;
-        for(int i = 0; i < cardNum; i++)
+        GameManager.Instance.cardNum = cardNum;
+
+        for (int i = 0; i < cardNum; i++)
         {
-            float x = (i % raw)*1.2f +0.25f; 
-            float y = (i / raw)*1.2f + 1.2f;
-            GameObject go = Instantiate(card,this.transform);
+            float x = (i % raw) * 1.2f + 0.25f;
+            float y = (i / raw) * 1.2f + 1.2f;
+            GameObject go = Instantiate(card, this.transform);
             go.transform.position = new Vector2(go.transform.position.x + x, go.transform.position.y + y);
             cardScript = go.GetComponent<Card>();
             cardScript.Setting(arr[i]);
         }
-        
+        callback?.Invoke();
     }
 
-    
+
 }

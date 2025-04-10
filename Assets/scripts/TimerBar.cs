@@ -17,8 +17,8 @@ public class TimerBar : MonoBehaviour
     [SerializeField] private RectTransform phoenix;
     [SerializeField] private RectTransform shakeTarget; // TimerBar 전체의 RectTransform
 
-    [Header("Timer Settings")]
-    [SerializeField] private float totalTime = 30f;
+    [Header("Color Thresholds")]
+    private float totalTime;
 
     [Header("Color Thresholds")]
     [SerializeField] private float warningTimeThreshold = 15f;
@@ -34,6 +34,7 @@ public class TimerBar : MonoBehaviour
     [SerializeField] private float shakeStartThreshold = 5f; // 끝나기 몇 초 전부터 흔들릴지
 
     public float elapsedTime = 0f;
+   
     private float barWidth;
     private Vector3 originalPosition;
     private int lastWarningSecond = -1;
@@ -68,7 +69,7 @@ public class TimerBar : MonoBehaviour
         bgmSource = AudioManager.Instance.GetAudioSource();
         sfxSource = gameObject.AddComponent<AudioSource>();
 
-        StartTimer(Difficulty.Normal);
+        StartTimer(DifficultSetting.Instance.Getting());
     }
 
     private void Update()
@@ -85,10 +86,16 @@ public class TimerBar : MonoBehaviour
 
         CheckGameOver();
     }
-    public void TimeSetting(float time)
+    
+    public void SettingTotalTime(float time)
     {
         totalTime = time;
     }
+    public float GettingTotalTime()
+    {
+        return totalTime;
+    }
+
 
     #region 타이머 업데이트 함수
     private void UpdateTimerUI(float t)
@@ -231,18 +238,27 @@ public class TimerBar : MonoBehaviour
     #endregion
 
     #region 타이머 시작 함수
-    public void StartTimer(Difficulty difficulty)
+    public void StartTimer(DifficultSetting.Difficulty difficulty)
     {
+        
         switch (difficulty)
         {
-            case Difficulty.Easy:
+            case DifficultSetting.Difficulty.Easy:
+                totalTime = 60f;
+                Debug.Log("이지모드");
+                Debug.Log(totalTime);
+                break;
+            case DifficultSetting.Difficulty.Normal:
+                Debug.Log("노말모드");
                 totalTime = 45f;
+                Debug.Log(totalTime);
+                
                 break;
-            case Difficulty.Normal:
+            case DifficultSetting.Difficulty.Hard:
+                Debug.Log("하드모드");
                 totalTime = 30f;
-                break;
-            case Difficulty.Hard:
-                totalTime = 20f;
+                Debug.Log(totalTime);
+                
                 break;
         }
 
@@ -250,19 +266,13 @@ public class TimerBar : MonoBehaviour
     }
     #endregion
 
-    #region 난이도 enum
-    public enum Difficulty
-    {
-        Easy,
-        Normal,
-        Hard
-    }
-    #endregion
+
 
     #region 시간 추가 함수
     public void AddTime(float extraTime)
     {
         totalTime += extraTime;
+        GameManager.Instance.totaltime += extraTime;
 
         // 시간 연장으로 BGM 속도 조건이 바뀔 수 있으므로 다시 체크
         if ((totalTime - elapsedTime) > bgmSpeedUpTime)
@@ -303,15 +313,13 @@ public class TimerBar : MonoBehaviour
 
     public void TimeFreezing(float time)
     {
-        isRunning = false;
-        Invoke("TimeUnFreeze", time);
+        PauseTimer();
+        Invoke("ResumeTimer", time);
+        
 
     }
 
-    void TimeUnFreeze()
-    {
-        isRunning = true;
-    }
+
     public void ResumeTimer()
     {
         isPaused = false;

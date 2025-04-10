@@ -444,7 +444,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 414558830}
         m_TargetAssemblyTypeName: RetryBTN, Assembly-CSharp
-        m_MethodName: Retry
+        m_MethodName: StageScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

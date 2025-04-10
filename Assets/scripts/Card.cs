@@ -16,11 +16,14 @@ public class Card : MonoBehaviour
     [SerializeField] private AudioClip flip; //카드 뒤집기 사운드
     
     AudioSource ads;
-
+    private void Awake()
+    {
+        ads = GetComponent<AudioSource>();
+    }
 
     private void Start()
     {
-        ads = GetComponent<AudioSource>();  
+        
 
 
     }
