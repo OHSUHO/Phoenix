@@ -1,19 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
-    int idx = 0;
+    public int idx = 0;
 
     public Animator anim;
     public GameObject front;
     public GameObject back;
     public SpriteRenderer frontImage;
     
+    [SerializeField] private AudioClip flip; //카드 뒤집기 사운드
+    
+    AudioSource ads;
+
+
     private void Start()
     {
-     
+        ads = GetComponent<AudioSource>();  
+
 
     }
     public void SelectedCard()
@@ -21,9 +29,9 @@ public class Card : MonoBehaviour
         anim.SetBool("isSelected", true);
         InvokeSetActiveFront();
         InvokeSetUnActiveBack();
-        Invoke("MissMatched", 1.0f);
-        
-        
+        ads.PlayOneShot(flip);
+
+
     }
 
     public void Setting(int num)
@@ -32,22 +40,29 @@ public class Card : MonoBehaviour
         frontImage.sprite = Resources.Load<Sprite>($"Phoenix{num}");
     }
 
-    void MissMatched()
+
+    public void InvokeMissMatched()
     {
-        Debug.Log("missMatch");
+        Invoke("MissMatched", 1f);
+    }
+    public void MissMatched()
+    {
+
         anim.SetBool("isSelected", false);
         InvokeSetUnActiveFront();
         InvokeSetActiveBack();
-        TimerBar.Instance.ReduceTime(1.5f);
+        
+
     }
 
-    
+
+
     void InvokeSetActiveFront()
     {
         Invoke("SetActiveFront", 0.5f);
     }
 
-    void SetActiveFront()
+    public void SetActiveFront()
     {
         front.SetActive(true);
     }
@@ -79,4 +94,35 @@ public class Card : MonoBehaviour
     {
         back.SetActive(true);
     }
+
+    public void OpenCard()
+    {
+        SelectedCard();
+        
+            if (GameManager.Instance.firstCard == null)
+            {
+                GameManager.Instance.firstCard = this;
+                
+        }
+            else
+            {  
+            
+                GameManager.Instance.secondCard = this;
+              
+                GameManager.Instance.Matched();
+                
+            }
+    }
+
+    public void DestroyCard()
+    {
+        Invoke("DestoryCardInvoke", 1.0f);
+    }
+
+    void DestoryCardInvoke()
+    {
+        Destroy(gameObject);
+    }
+
+
 }
