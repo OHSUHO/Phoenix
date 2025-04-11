@@ -56,6 +56,7 @@ public class TimerBar : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            StartTimer(DifficultSetting.Instance.Getting());
         }
         Time.timeScale = 1;
 
@@ -69,7 +70,7 @@ public class TimerBar : MonoBehaviour
         bgmSource = AudioManager.Instance.GetAudioSource();
         sfxSource = gameObject.AddComponent<AudioSource>();
 
-        StartTimer(DifficultSetting.Instance.Getting());
+        
     }
 
     private void Update()
@@ -244,19 +245,19 @@ public class TimerBar : MonoBehaviour
         switch (difficulty)
         {
             case DifficultSetting.Difficulty.Easy:
-                totalTime = 60f;
+                SettingTotalTime(60f);
                 Debug.Log("이지모드");
                 Debug.Log(totalTime);
                 break;
             case DifficultSetting.Difficulty.Normal:
                 Debug.Log("노말모드");
-                totalTime = 45f;
+                SettingTotalTime(45f);
                 Debug.Log(totalTime);
                 
                 break;
             case DifficultSetting.Difficulty.Hard:
                 Debug.Log("하드모드");
-                totalTime = 30f;
+                SettingTotalTime(30f);
                 Debug.Log(totalTime);
                 
                 break;

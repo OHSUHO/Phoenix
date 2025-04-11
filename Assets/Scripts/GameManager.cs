@@ -25,8 +25,8 @@ public class GameManager : MonoBehaviour
     public Card firstCard;
     public Card secondCard;
 
-    [HideInInspector]
-    public float totaltime;
+    
+    public float totaltime = 45f;
 
     public int cardNum;
     
@@ -35,8 +35,8 @@ public class GameManager : MonoBehaviour
     AudioSource ads;
     string card1Str = "르탄1 카드 모든카드공개!";
     string card2Str = "르탄2 카드 시간10초추가!";
-    float time = 0f;
-    int score = 0;
+    float time;
+    int score;
     public void Awake()
     {
         if (Instance == null)
@@ -53,24 +53,31 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        time = 0f;
+        score = 0;
         Debug.Log(Board.board);
         ads = GetComponent<AudioSource>();
         if (TimerBar.Instance != null)
+        {
             totaltime = TimerBar.Instance.GettingTotalTime();
+            Debug.Log($"현재 totalTime : {totaltime}");
+            Debug.Log($"현재 GettingTotalTime : {TimerBar.Instance.GettingTotalTime()}");
+        }
         Board.board.BoardSetting(()=>StartFlip(DifficultSetting.Instance.Getting()));
 
     }
 
     // Update is called once per frame
     void Update()
-    {   if(TimerBar.Instance != null) { 
-        time = TimerBar.Instance.elapsedTime;
-       
-        if (time >= totaltime)
+    {
+        if (TimerBar.Instance != null)
         {
-            FailActive();
-            time = totaltime;
-        }
+            time = TimerBar.Instance.elapsedTime;
+
+            if (time >= totaltime)
+            {
+                FailActive();
+            }
         }
     }
 
